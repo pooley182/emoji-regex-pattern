@@ -1,0 +1,22 @@
+{
+  "name": "pooley182/emoji-regex-pattern",
+  "description": "PHP regexp pattern matching Unicode emojis",
+  "license": "MIT",
+  "require": {
+    "php": ">=7.1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Pooley182\\EmojiRegexPattern\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "David Pooley",
+      "email": "dave@pooley-mail.co.uk"
+    }
+  ],
+  "config": {
+    "sort-packages": true
+  }
+}
