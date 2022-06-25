@@ -37,7 +37,7 @@ $zeroWidthJoinerSequencePatternLines = renderPatternLines($zeroWidthJoinerSequen
 
 $code = <<<PHP
 <?php
-namespace Pooley182/EmojiRegexPattern;
+namespace Pooley182\EmojiRegexPattern;
 /**
  * Pattern for matching emojis
  *
@@ -173,7 +173,8 @@ function hexCodeToEscape(string $hex): string
  */
 function renderArrayLine(array $emoji): string
 {
-    return var_export($emoji['pattern'], true) . ', // ' . $emoji['comment'];
+    //return var_export($emoji['pattern'], true) . ', // ' . $emoji['comment'];
+    return var_export($emoji['pattern'], true).',';
 }
 
 function renderPatternLines(array $patterns): string
