@@ -104,7 +104,7 @@ final class EmojiRegexPattern
 }
 PHP;
 
-file_put_contents(__DIR__ . '/../src/EmojiPattern.php', $code);
+file_put_contents(__DIR__ . '/../src/EmojiRegexPattern.php', $code);
 
 function parseFile(string $fileContent): array
 {
