@@ -3,7 +3,7 @@ namespace Pooley182\EmojiRegexPattern;
 /**
  * Pattern for matching emojis
  *
- * This file is generated from Unicode Emoji .
+ * This file is generated from Unicode Emoji 15.1.
  */
 final class EmojiRegexPattern
 {
@@ -432,8 +432,8 @@ final class EmojiRegexPattern
     ];
     /**
      * Patterns that if not followed by the U+FE0F (variant selector) are plain text.
-     * e.g. # * 0..9 
-     */ 
+     * e.g. # * 0..9
+     */
     private const EMOJI_NON_COMPONENTS = [
         '\\x{0023}',
         '\\x{002A}',
