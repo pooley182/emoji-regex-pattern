@@ -11,6 +11,7 @@ $emojis = parseFile($responses['emoji-data.txt']);
 $patterns = array_filter($emojis, function (array $emoji): bool  { return $emoji['property'] === 'Emoji'; });
 $presentationPatterns = array_filter($emojis, function (array $emoji): bool  { return $emoji['property'] === 'Emoji_Presentation'; });
 $presentationPatternRegexps = array_column($presentationPatterns, 'pattern');
+$emojiNonComponents = array_filter($emojis, function (array $emoji): bool { return $emoji['property'] === 'Emoji_Component';});
 $nonPresentationPatterns = array_filter($patterns, function (array $emoji) use ($presentationPatternRegexps): bool {
     return !in_array($emoji['pattern'], $presentationPatternRegexps);
 });
@@ -32,6 +33,7 @@ $emojiVersion = basename($redirect);
 $patternLines = renderPatternLines($patterns);
 $nonPresentationPatternLines = renderPatternLines($nonPresentationPatterns);
 $presentationPatternLines = renderPatternLines($presentationPatterns);
+$emojiNonComponentLines = renderPatternLines($emojiNonComponents);
 $sequencePatternLines = renderPatternLines($sequencePatterns);
 $zeroWidthJoinerSequencePatternLines = renderPatternLines($zeroWidthJoinerSequencePatterns);
 
@@ -59,6 +61,13 @@ final class EmojiRegexPattern
      */
     private const EMOJI_PRESENTATION_PATTERNS = [
         $presentationPatternLines
+    ];
+    /**
+     * Patterns that if not followed by the U+FE0F (variant selector) are plain text.
+     * e.g. # * 0..9 
+     */ 
+    private const EMOJI_NON_COMPONENTS = [
+        $emojiNonComponentLines
     ];
     /**
      * Patterns that match emoji sequences. This includes keycap characters, flags, and skintone
@@ -90,7 +99,8 @@ final class EmojiRegexPattern
             return self::\$emojiPattern;
         }
         // The non-"Presentation" group needs to be followed by a special character to be rendered like emoji.
-        \$emojiVariants = '(?:'.implode('|', self::EMOJI_NON_PRESENTATION_PATTERNS).')\x{FE0F}';
+        \$emojiVariants = '(?:'.implode('|', array_diff(self::EMOJI_NON_PRESENTATION_PATTERNS, self::EMOJI_NON_COMPONENTS)).')(?:\x{FE0F}?)';
+        \$emojiVariantsExtended = '(?:'.implode('|', self::EMOJI_NON_COMPONENTS).')\x{FE0F}';
         // Emoji can be followed by optional combining marks. The standard
         // says only keycaps and backslash are likely to be supported.
         \$combiningMarks = '[\x{20E3}\x{20E0}]';
@@ -99,7 +109,7 @@ final class EmojiRegexPattern
         // Some other emoji are sequences of characters.
         \$zwjSequences = implode('|', self::ZWJ_SEQUENCE_PATTERNS);
         \$otherSequences = implode('|', self::SEQUENCE_PATTERNS);
-        return self::\$emojiPattern = '(?:(?:'.\$zwjSequences.'|'.\$otherSequences.'|'.\$emojiVariants.'|'.\$emojiPresentation.')(?:'.\$combiningMarks.')?)';
+        return self::\$emojiPattern = '(?:(?:'.\$zwjSequences.'|'.\$otherSequences.'|'.\$emojiVariantsExtended.'|'.\$emojiVariants.'|'.\$emojiPresentation.')(?:'.\$combiningMarks.')?)';
     }
 }
 PHP;

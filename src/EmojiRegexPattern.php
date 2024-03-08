@@ -3,7 +3,7 @@ namespace Pooley182\EmojiRegexPattern;
 /**
  * Pattern for matching emojis
  *
- * This file is generated from Unicode Emoji 15.1.
+ * This file is generated from Unicode Emoji .
  */
 final class EmojiRegexPattern
 {
@@ -429,6 +429,22 @@ final class EmojiRegexPattern
         '[\\x{2B1B}-\\x{2B1C}]',
         '\\x{2B50}',
         '\\x{2B55}',
+    ];
+    /**
+     * Patterns that if not followed by the U+FE0F (variant selector) are plain text.
+     * e.g. # * 0..9 
+     */ 
+    private const EMOJI_NON_COMPONENTS = [
+        '\\x{0023}',
+        '\\x{002A}',
+        '[\\x{0030}-\\x{0039}]',
+        '[\\x{1F1E6}-\\x{1F1FF}]',
+        '[\\x{1F3FB}-\\x{1F3FF}]',
+        '[\\x{1F9B0}-\\x{1F9B3}]',
+        '\\x{200D}',
+        '\\x{20E3}',
+        '[\\x{E0020}-\\x{E007F}]',
+        '\\x{FE0F}',
     ];
     /**
      * Patterns that match emoji sequences. This includes keycap characters, flags, and skintone
@@ -3342,7 +3358,8 @@ final class EmojiRegexPattern
             return self::$emojiPattern;
         }
         // The non-"Presentation" group needs to be followed by a special character to be rendered like emoji.
-        $emojiVariants = '(?:'.implode('|', self::EMOJI_NON_PRESENTATION_PATTERNS).')\x{FE0F}';
+        $emojiVariants = '(?:'.implode('|', array_diff(self::EMOJI_NON_PRESENTATION_PATTERNS, self::EMOJI_NON_COMPONENTS)).')(?:\x{FE0F}?)';
+        $emojiVariantsExtended = '(?:'.implode('|', self::EMOJI_NON_COMPONENTS).')\x{FE0F}';
         // Emoji can be followed by optional combining marks. The standard
         // says only keycaps and backslash are likely to be supported.
         $combiningMarks = '[\x{20E3}\x{20E0}]';
@@ -3351,6 +3368,6 @@ final class EmojiRegexPattern
         // Some other emoji are sequences of characters.
         $zwjSequences = implode('|', self::ZWJ_SEQUENCE_PATTERNS);
         $otherSequences = implode('|', self::SEQUENCE_PATTERNS);
-        return self::$emojiPattern = '(?:(?:'.$zwjSequences.'|'.$otherSequences.'|'.$emojiVariants.'|'.$emojiPresentation.')(?:'.$combiningMarks.')?)';
+        return self::$emojiPattern = '(?:(?:'.$zwjSequences.'|'.$otherSequences.'|'.$emojiVariantsExtended.'|'.$emojiVariants.'|'.$emojiPresentation.')(?:'.$combiningMarks.')?)';
     }
 }
