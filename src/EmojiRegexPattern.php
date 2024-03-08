@@ -3,7 +3,7 @@ namespace Pooley182\EmojiRegexPattern;
 /**
  * Pattern for matching emojis
  *
- * This file is generated from Unicode Emoji 15.1.
+ * This file is generated from Unicode Emoji .
  */
 final class EmojiRegexPattern
 {
@@ -3343,6 +3343,7 @@ final class EmojiRegexPattern
         }
         // The non-"Presentation" group needs to be followed by a special character to be rendered like emoji.
         $emojiVariants = '(?:'.implode('|', self::EMOJI_NON_PRESENTATION_PATTERNS).')\x{FE0F}';
+        $emojiVariantsRaw = implode('|', self::EMOJI_NON_PRESENTATION_PATTERNS);
         // Emoji can be followed by optional combining marks. The standard
         // says only keycaps and backslash are likely to be supported.
         $combiningMarks = '[\x{20E3}\x{20E0}]';
@@ -3351,6 +3352,6 @@ final class EmojiRegexPattern
         // Some other emoji are sequences of characters.
         $zwjSequences = implode('|', self::ZWJ_SEQUENCE_PATTERNS);
         $otherSequences = implode('|', self::SEQUENCE_PATTERNS);
-        return self::$emojiPattern = '(?:(?:'.$zwjSequences.'|'.$otherSequences.'|'.$emojiVariants.'|'.$emojiPresentation.')(?:'.$combiningMarks.')?)';
+        return self::$emojiPattern = '(?:(?:'.$zwjSequences.'|'.$otherSequences.'|'.$emojiVariantsRaw.'|'.$emojiVariants.'|'.$emojiPresentation.')(?:'.$combiningMarks.')?)';
     }
 }
